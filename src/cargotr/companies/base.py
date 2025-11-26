@@ -2,8 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Optional
 
 import requests
-
-from trcargo.utils import request_page
+from cargotr.utils import request_page
 
 
 class CargoTrackingError(Exception):

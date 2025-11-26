@@ -4,8 +4,7 @@ from datetime import datetime
 from typing import List, Optional
 
 import requests
-
-from trcargo.companies.base import BaseCompaine, CargoTrackingError
+from cargotr.companies.base import BaseCompaine, CargoTrackingError
 
 
 @dataclass
