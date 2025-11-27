@@ -4,7 +4,8 @@ from datetime import datetime
 from typing import List, Optional
 
 import requests
-from cargotr.companies.base import BaseCompaine, CargoTrackingError
+
+from trcargo.companies.base import BaseCompaine, CargoTrackingError
 
 
 @dataclass
@@ -46,7 +47,7 @@ class CargoInfoResult:
 
 
 class PTT(BaseCompaine):
-    NAME: str = "PTT"
+    NAME: str = "PTT Kargo"
     BASE_URL: str = "https://ptt.gov.tr"
     API_URL: str = "https://api.ptt.gov.tr"
 
