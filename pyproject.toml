@@ -24,12 +24,15 @@ classifiers = [
   "Programming Language :: Python :: Implementation :: CPython",
   "Programming Language :: Python :: Implementation :: PyPy",
 ]
-dependencies = ["requests==2.32.5", "beautifulsoup4==4.14.2"]
+dependencies = ["requests==2.32.5", "beautifulsoup4==4.14.2", "rich"]
 
 [project.urls]
 Source = "https://github.com/beucismis/trcargo"
 Issues = "https://github.com/beucismis/trcargo/issues"
 Documentation = "https://github.com/beucismis/trcargo#readme"
+
+[project.scripts]
+trcargo = "trcargo.cli:main"
 
 [tool.hatch.version]
 path = "src/trcargo/__about__.py"
