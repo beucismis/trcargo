@@ -23,7 +23,7 @@ class AcceptanceInfo:
 @dataclass
 class Movement:
     date: datetime.date
-    time: datetime.time
+    time: Optional[datetime.time]
     description: str
     office: str
     city: str
@@ -36,7 +36,7 @@ class Movement:
 class LatestStatus:
     latest_status_description: str
     latest_operation_date: datetime.date
-    latest_operation_time: datetime.time
+    latest_operation_time: Optional[datetime.time]
 
 
 @dataclass
@@ -50,6 +50,26 @@ class PTT(BaseCompaine):
     NAME: str = "PTT Kargo"
     BASE_URL: str = "https://ptt.gov.tr"
     API_URL: str = "https://api.ptt.gov.tr"
+
+    @staticmethod
+    def _parse_time(time_str: str) -> Optional[datetime.time]:
+        if not time_str:
+            return None
+
+        time_str = str(time_str).strip()
+
+        try:
+            return datetime.strptime(time_str, "%H:%M:%S").time()
+        except ValueError:
+            cleaned_time = "".join(filter(str.isdigit, time_str))
+
+            if len(cleaned_time) >= 6:
+                try:
+                    return datetime.strptime(cleaned_time[:6], "%H%M%S").time()
+                except ValueError:
+                    return None
+
+            return None
 
     def get_search(self, query: str) -> CargoInfoResult:
         request = requests.Request("POST", f"{self.API_URL}/api/ShipmentTracking", json=[query])
@@ -83,7 +103,7 @@ class PTT(BaseCompaine):
         movements = [
             Movement(
                 date=datetime.strptime(h["tarih"], "%d/%m/%Y").date(),
-                time=datetime.strptime(h["saat"], "%H:%M:%S").time(),
+                time=self._parse_time(h["saat"]),
                 description=h["aciklama"],
                 office=h["isyeri"],
                 city=h["il"],
@@ -100,7 +120,7 @@ class PTT(BaseCompaine):
             latest_status = LatestStatus(
                 latest_status_description=latest_status_data.get("son_durum_aciklama"),
                 latest_operation_date=datetime.strptime(latest_status_data.get("son_islem_tarihi"), "%Y%m%d").date(),
-                latest_operation_time=datetime.strptime(latest_status_data.get("son_islem_saati"), "%H:%M:%S").time(),
+                latest_operation_time=self._parse_time(latest_status_data.get("son_islem_saati")),
             )
 
         return CargoInfoResult(
